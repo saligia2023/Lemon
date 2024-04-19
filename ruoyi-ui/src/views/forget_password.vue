@@ -84,12 +84,12 @@ export default {
       this.$refs.resetForm.validate(valid => {
         if (valid) {
           this.loading = true;
-          resetPassword(this.resetForm).then(res => {
-            this.$alert("您的密码已重置，请检查您的邮箱。", '系统提示', {
+          //forget_password().then(res => {
+            this.$alert("请检查您的邮箱,重置密码已发送。", '系统提示', {
               type: 'success'
             }).then(() => {
               this.$router.push("/login");
-            }).catch(() => {});
+            //}).catch(() => {});
           }).catch(() => {
             this.loading = false;
             if (this.captchaEnabled) {
