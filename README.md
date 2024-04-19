@@ -59,24 +59,4 @@
         <td><img src="https://github.com/saligia2023/.Lemon./blob/main/pic/5.png"/></td>
         <td><img src="https://github.com/saligia2023/.Lemon./blob/main/pic/6.png"/></td>
     </tr>
-    <tr>
-        <td><img src="file:///E:/FileRecv/Lemon-main/pic/image7.png"/></td>
-        <td><img src="file:///E:/FileRecv/Lemon-main/pic/image8.png"/></td>
-    </tr>
-    <tr>
-        <td><img src="file:///E:/FileRecv/Lemon-main/pic/image9.jpg"/></td>
-        <td><img src="file:///E:/FileRecv/Lemon-main/pic/image10.jpg"/></td>
-    </tr>
-    <tr>
-        <td><img src="file:///E:/FileRecv/Lemon-main/pic/image11.png"/></td>
-        <td><img src="file:///E:/FileRecv/Lemon-main/pic/image12.png"/></td>
-    </tr>
-    <tr>
-        <td><img src="file:///E:/FileRecv/Lemon-main/pic/image13.png"/></td>
-        <td><img src="file:///E:/FileRecv/Lemon-main/pic/image14.png"/></td>
-    </tr>
-    <tr>
-        <td><img src="file:///E:/FileRecv/Lemon-main/pic/image15.jpg"/></td>
-        <td><img src="file:///E:/FileRecv/Lemon-main/pic/image16.png"/></td>
-    </tr>
 </table>
