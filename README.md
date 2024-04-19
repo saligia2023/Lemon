@@ -48,7 +48,7 @@
 
 <table>
     <tr>
-        <td><img src="Lemon-main/pic/1.png"/></td>
-        <td><img src="Lemon-main/pic/2.png"/></td>
+        <td><img src="https://drive.google.com/file/d/1nSMV9td2myBhgt6t4VWGh5CncBwGnlin/view?usp=drive_link"/></td>
+        <td><img src=""/></td>
     </tr>
 </table>
