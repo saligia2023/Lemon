@@ -48,7 +48,7 @@
 
 <table>
     <tr>
-        <td><img src="https://imgur.com/ob0MoZN"/></td>
+        <td><img src="https://imgur.com/a/qIBKUH1"/></td>
         <td><img src="https://oscimg.oschina.net/oscnet/1cbcf0e6f257c7d3a063c0e3f2ff989e4b3.jpg"/></td>
     </tr>
 </table>
