@@ -12,7 +12,7 @@
           </div>
           <div>
             <div class="logininfo">
-              <p>上次登录时间：<span>2024-4-18</span></p>
+              <p>上次登录时间：<span>{{ lastUpdatedTime }}</span></p>
               <p>上次登录地址：<span>扬州</span></p>
             </div>
           </div>
@@ -81,6 +81,10 @@ export default {
   mounted() {
     this.getUser();
     this.showEcarts();
+    this.currentTime = this.formatDate(new Date());
+    setInterval(() => {
+      this.currentTime = this.formatDate(new Date());
+    }, 1000);
     getData().then((data) => {
       console.log(data)
     })
@@ -90,6 +94,8 @@ export default {
     return {
       user: {},
       roleGroup: {},
+      currentTime: '',
+      lastUpdatedTime: '',
       tableData: [{
         age: '21',
         name: '杨弈航',
@@ -121,7 +127,16 @@ export default {
       getUserProfile().then(response => {
         this.user = response.data;
         this.roleGroup = response.roleGroup;
+        this.lastUpdatedTime = this.formatDate(new Date());  // 更新时间
       });
+    },
+    formatDate(date) {
+      return date.getFullYear() + '-' +
+        (date.getMonth() + 1).toString().padStart(2, '0') + '-' +
+        date.getDate().toString().padStart(2, '0') + ' ' +
+        date.getHours().toString().padStart(2, '0') + ':' +
+        date.getMinutes().toString().padStart(2, '0') + ':' +
+        date.getSeconds().toString().padStart(2, '0');
     },
     showEcarts() {
       // 基于准备好的dom，初始化echarts实例
