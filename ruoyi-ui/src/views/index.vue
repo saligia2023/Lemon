@@ -6,8 +6,8 @@
           <div class="user">
             <img src="../assets/images/profile.jpg" alt="">
             <div class="userinfo">
-              <p class="name">Admin</p>
-              <p class="access">管理员</p>
+              <p class="name">{{ user.userName }}</p>
+              <p class="access">{{ roleGroup }}</p>
             </div>
           </div>
           <div>
@@ -76,10 +76,10 @@
 <script>
 import '@/assets/echarts/macarons.js';
 // import {getData} from "@/api/monitor";
-
+import { getUserProfile } from "@/api/system/user";
 export default {
   mounted() {
-    // 挂在完成dom后进行初始化
+    this.getUser();
     this.showEcarts();
     getData().then((data) => {
       console.log(data)
@@ -88,6 +88,8 @@ export default {
 
   data() {
     return {
+      user: {},
+      roleGroup: {},
       tableData: [{
         age: '21',
         name: '杨弈航',
@@ -115,142 +117,20 @@ export default {
   },
 
   methods: {
+    getUser() {
+      getUserProfile().then(response => {
+        this.user = response.data;
+        this.roleGroup = response.roleGroup;
+      });
+    },
     showEcarts() {
       // 基于准备好的dom，初始化echarts实例
-      const mycart = this.$echarts.init(this.$refs.box,'macarons')
+      const mycart = this.$echarts.init(this.$refs.box, 'macarons')
       //绘制图表
       const option = {
-        xAxis: {
-          type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [
-          {
-            data: [120, 200, 150, 80, 70, 110, 130],
-            type: 'bar',
-            showBackground: true,
-            backgroundStyle: {
-              color: 'rgba(180, 180, 180, 0.2)'
-            }
-          }
-        ]
-      };
-      mycart.setOption(option)
-
-      //折线图
-      const myzx = this.$echarts.init(this.$refs.zx,'macarons')
-      myzx.setOption({
         title: {
-          text: 'Stacked Line'
-        },
-        tooltip: {
-          trigger: 'axis'
-        },
-        legend: {
-          data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine']
-        },
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true
-        },
-        toolbox: {
-          feature: {
-            saveAsImage: {}
-          }
-        },
-        xAxis: {
-          type: 'category',
-          boundaryGap: false,
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [
-          {
-            name: 'Email',
-            type: 'line',
-            stack: 'Total',
-            data: [120, 132, 101, 134, 90, 230, 210]
-          },
-          {
-            name: 'Union Ads',
-            type: 'line',
-            stack: 'Total',
-            data: [220, 182, 191, 234, 290, 330, 310]
-          },
-          {
-            name: 'Video Ads',
-            type: 'line',
-            stack: 'Total',
-            data: [150, 232, 201, 154, 190, 330, 410]
-          },
-          {
-            name: 'Direct',
-            type: 'line',
-            stack: 'Total',
-            data: [320, 332, 301, 334, 390, 330, 320]
-          },
-          {
-            name: 'Search Engine',
-            type: 'line',
-            stack: 'Total',
-            data: [820, 932, 901, 934, 1290, 1330, 1320]
-          }
-        ]
-      });
-
-//柱状图2
-      const myzzt = this.$echarts.init(this.$refs.zzt,'macarons')
-      myzzt.setOption({
-        title: {
-          text: 'World Population'
-        },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow'
-          }
-        },
-        legend: {},
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true
-        },
-        xAxis: {
-          type: 'value',
-          boundaryGap: [0, 0.01]
-        },
-        yAxis: {
-          type: 'category',
-          data: ['Brazil', 'Indonesia', 'USA', 'India', 'China', 'World']
-        },
-        series: [
-          {
-            name: '2011',
-            type: 'bar',
-            data: [18203, 23489, 29034, 104970, 131744, 630230]
-          },
-          {
-            name: '2012',
-            type: 'bar',
-            data: [19325, 23438, 31000, 121594, 134141, 681807]
-          }
-        ]
-      });
-
-      //饼图
-      const mypie = this.$echarts.init(this.$refs.boxpie,'macarons')
-      mypie.setOption({
-        title: {
-          text: 'Resume age ratio',
+          text: '招聘技能占比',
+          subtext: '',
           left: 'center'
         },
         tooltip: {
@@ -266,11 +146,11 @@ export default {
             type: 'pie',
             radius: '50%',
             data: [
-              { value: 51, name: '20~24' },
-              { value: 21, name: '24~28' },
-              { value: 33, name: '28~35' },
-              { value: 18, name: '35~40' },
-              { value: 11, name: '40+' }
+              { value: 1048, name: '熟悉框架' },
+              { value: 735, name: '精通网络安全技术' },
+              { value: 580, name: '精通JAVA' },
+              { value: 484, name: '精通外语' },
+              { value: 300, name: '精通网络安全工具' }
             ],
             emphasis: {
               itemStyle: {
@@ -281,10 +161,203 @@ export default {
             }
           }
         ]
-      })
+      };
+      mycart.setOption(option)
+
+      //折线图
+      const myzx = this.$echarts.init(this.$refs.zx, 'macarons')
+      myzx.setOption( {
+        title: {
+          text: '候选人渠道'
+        },
+        tooltip: {
+          trigger: 'axis'
+        },
+        legend: {
+          data: ['Boss直聘', '58同城', '内部推荐', '赶集直招', '校园招聘']
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {}
+          }
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: ['4.1', '4.4', '4.7', '4.10', '4.13', '4.16', '4.19']
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [
+          {
+            name: 'Boss直聘',
+            type: 'line',
+            data: [[0, 1], [1, 5], [2, 2], [3, 2], [4, 1], [5, 3], [6, 4]]
+          },
+          {
+            name: '58同城',
+            type: 'line',
+            data: [[0, 10], [1, 6], [2, 19], [3, 12], [4, 19], [5, 13], [6, 5]]
+          },
+          {
+            name: '内部推荐',
+            type: 'line',
+            data: [[0, 15], [1, 14], [2, 23], [3, 20], [4, 15], [5, 19], [6, 33]]
+          },
+          {
+            name: '赶集直招',
+            type: 'line',
+            data: [[0, 30], [1, 25], [2, 24], [3, 15], [4, 17], [5, 16], [6, 27]]
+          },
+          {
+            name: '校园招聘',
+            type: 'line',
+            data: [[0, 25], [1, 14], [2, 8], [3, 19], [4, 11], [5, 25], [6, 14]]
+          },
+        ]
+      }
+    );
+
+//柱状图2
+      const myzzt = this.$echarts.init(this.$refs.zzt, 'macarons')
+      myzzt.setOption({
+        title: {
+          text: '职员需求图',
+          subtext: '',
+          left: 'left'
+        },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'shadow'
+            }
+          },
+          legend: {
+            data: ['预期', '实际', '差值'],
+            left: 'center'// 修改图例名称
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
+          xAxis: [
+            {
+              type: 'value'
+            }
+          ],
+          yAxis: [
+            {
+              type: 'category',
+              axisTick: {
+                show: false
+              },
+              data: ['技术开发人员', '市场营销人员', '网络安全人员', '会计', '保洁']
+            }
+          ],
+          series: [
+            {
+              name: '预期', // 修改第一条柱形的名称
+              type: 'bar',
+              label: {
+                show: true,
+                position: 'inside'
+              },
+              emphasis: {
+                focus: 'series'
+              },
+              data: [5, 6, 4, 2, 4]
+            },
+            {
+              name: '实际', // 修改第二条柱形的名称
+              type: 'bar',
+              stack: 'Total',
+              label: {
+                show: true
+              },
+              emphasis: {
+                focus: 'series'
+              },
+              data: [8, 10, 5, 10, 9]
+            },
+            {
+              name: '差值', // 修改第三条柱形的名称
+              type: 'bar',
+              stack: 'Total',
+              label: {
+                show: true,
+                position: 'left'
+              },
+              emphasis: {
+                focus: 'series'
+              },
+              data: [-3, -4, -1, -8, -5]
+            }
+          ]
+        }
+      );
+
+      //饼图
+      const mypie = this.$echarts.init(this.$refs.boxpie, 'macarons');
+      mypie.setOption({
+        title: { // 添加标题
+          text: '年龄占比分布图',
+          left: 'center',
+
+        },
+        tooltip: {
+          trigger: 'item'
+        },
+        legend: {
+          show: false // 不显示图例
+        },
+        series: [{
+          name: 'Access From',
+          type: 'pie',
+          radius: ['35%', '65%'],
+          avoidLabelOverlap: false,
+          itemStyle: {
+            borderRadius: 10,
+            borderColor: '#fff',
+            borderWidth: 2
+          },
+          label: {
+            show: true,
+            formatter: '{b}', // 只显示名称
+            position: 'outside'
+          },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: 40,
+              fontWeight: 'bold'
+            }
+          },
+          labelLine: {
+            show: true
+          },
+          data: [
+            {value: 1048, name: '20~24'},
+            {value: 735, name: '24~28'},
+            {value: 580, name: '28~30'},
+            {value: 484, name: '30~35'},
+            {value: 300, name: '35+'}
+          ]
+        }]
+      });
+
     },
   },
 }
+
 </script>
 <style scoped>
 .user{
