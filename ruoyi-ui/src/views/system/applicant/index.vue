@@ -1,16 +1,16 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="姓名" prop="name">
+      <el-form-item label="用户姓名" prop="name">
         <el-input
           v-model="queryParams.name"
-          placeholder="请输入姓名"
+          placeholder="请输入用户姓名"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="性别" prop="gender">
-        <el-select v-model="queryParams.gender" placeholder="请选择性别" clearable>
+      <el-form-item label="用户性别" prop="gender">
+        <el-select v-model="queryParams.gender" placeholder="请选择用户性别" clearable>
           <el-option
             v-for="dict in dict.type.sys_user_sex"
             :key="dict.value"
@@ -19,21 +19,31 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="年龄" prop="age">
+      <el-form-item label="用户年龄" prop="age">
         <el-input
           v-model="queryParams.age"
-          placeholder="请输入年龄"
+          placeholder="请输入用户年龄"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="电话号码" prop="phone">
+        <el-input
+          v-model="queryParams.phone"
+          placeholder="请输入电话号码"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item label="学历" prop="education">
-        <el-input
-          v-model="queryParams.education"
-          placeholder="请输入学历"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+        <el-select v-model="queryParams.education" placeholder="请选择学历" clearable>
+          <el-option
+            v-for="dict in dict.type.sys_education"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="期望工资" prop="expectedSalary">
         <el-input
@@ -43,13 +53,16 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      
       <el-form-item label="应聘职位" prop="positionApplied">
-        <el-input
-          v-model="queryParams.positionApplied"
-          placeholder="请输入应聘职位"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+        <el-select v-model="queryParams.positionApplied" placeholder="请选择应聘职位" clearable>
+          <el-option
+            v-for="dict in dict.type.sys_job_want"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="求职状态" prop="jobStatus">
         <el-select v-model="queryParams.jobStatus" placeholder="请选择求职状态" clearable>
@@ -124,38 +137,68 @@
     <el-table v-loading="loading" :data="applicantList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="用户ID" align="center" prop="userId" />
-      <el-table-column label="姓名" align="center" prop="name" />
+      <el-table-column label="用户姓名" align="center" prop="name" />
       <el-table-column label="头像" align="center" prop="avatarUrl" width="100">
         <template slot-scope="scope">
           <image-preview :src="scope.row.avatarUrl" :width="50" :height="50"/>
         </template>
       </el-table-column>
-      <el-table-column label="性别" align="center" prop="gender">
+      <el-table-column label="用户性别" align="center" prop="gender">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_user_sex" :value="scope.row.gender"/>
         </template>
       </el-table-column>
-      <el-table-column label="年龄" align="center" prop="age" />
+      <el-table-column label="用户年龄" align="center" prop="age" />
       <el-table-column label="电话号码" align="center" prop="phone" />
-      <el-table-column label="学历" align="center" prop="education" />
-      <el-table-column label="期望工资" align="center" prop="expectedSalary" />
-      <el-table-column label="应聘职位" align="center" prop="positionApplied" />
-      <el-table-column label="求职状态" align="center" prop="jobStatus">
+      <el-table-column label="学历" align="center" prop="education">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_job_applicants" :value="scope.row.jobStatus"/>
+          <dict-tag :options="dict.type.sys_education" :value="scope.row.education"/>
         </template>
       </el-table-column>
-      <el-table-column label="工作经验" align="center" prop="workExperience" />
-      
-      <el-table-column label="简历" align="center" prop="resumeUrl">
+      <el-table-column label="期望工资" align="center" prop="expectedSalary" />
+      <el-table-column label="应聘职位" align="center" prop="positionApplied">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_job_want" :value="scope.row.positionApplied"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="求职状态" align="center" prop="jobStatus">
   <template slot-scope="scope">
-    <!-- 使用 getFullURL 方法生成正确的 URL -->
-    <a :href="getFullURL(scope.row.resumeUrl)" target="_blank" title="点击查看简历">
-      查看简历
-    </a>
+    <!-- 显示标签，非编辑状态 -->
+    <div v-if="editingRow !== scope.row.userId">
+      <dict-tag :options="dict.type.sys_job_applicants" :value="scope.row.jobStatus" @click.native="editJobStatus(scope.row)"/>
+    </div>
+    <!-- 编辑状态，显示下拉选择 -->
+    <el-select v-else v-model="scope.row.jobStatus" placeholder="请选择求职状态"
+               @change="updateJobStatus(scope.row, $event)"
+               >
+      <el-option
+        v-for="dict in dict.type.sys_job_applicants"
+        :key="dict.value"
+        :label="dict.label"
+        :value="dict.value">
+      </el-option>
+    </el-select>
   </template>
 </el-table-column>
 
+
+      <el-table-column label="工作经验" align="center" prop="workExperience" />
+      <el-table-column label="简历概要" align="center" prop="resumeKeyUrl">
+        <template slot-scope="scope">
+        <!-- 使用 getFullURL 方法生成正确的 URL 并创建一个可点击的链接 -->
+          <a :href="getFullURL(scope.row.resumeKeyUrl)" target="_blank" title="点击查看概要">
+           查看概要
+          </a>
+         </template>
+      </el-table-column>
+      <el-table-column label="简历" align="center" prop="resumeUrl">
+        <template slot-scope="scope">
+        <!-- 生成完整的 URL 并确保文件名被正确编码 -->
+          <a :href="getFullURL(scope.row.resumeUrl)" target="_blank" title="点击查看简历">
+          查看简历
+          </a>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -184,17 +227,17 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改应聘对话框 -->
+    <!-- 添加或修改招聘管理对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="form.name" placeholder="请输入姓名" />
+        <el-form-item label="用户姓名" prop="name">
+          <el-input v-model="form.name" placeholder="请输入用户姓名" />
         </el-form-item>
         <el-form-item label="头像" prop="avatarUrl">
           <image-upload v-model="form.avatarUrl"/>
         </el-form-item>
-        <el-form-item label="性别" prop="gender">
-          <el-select v-model="form.gender" placeholder="请选择性别">
+        <el-form-item label="用户性别" prop="gender">
+          <el-select v-model="form.gender" placeholder="请选择用户性别">
             <el-option
               v-for="dict in dict.type.sys_user_sex"
               :key="dict.value"
@@ -203,20 +246,34 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="年龄" prop="age">
-          <el-input v-model="form.age" placeholder="请输入年龄" />
+        <el-form-item label="用户年龄" prop="age">
+          <el-input v-model="form.age" placeholder="请输入用户年龄" />
         </el-form-item>
         <el-form-item label="电话号码" prop="phone">
           <el-input v-model="form.phone" placeholder="请输入电话号码" />
         </el-form-item>
         <el-form-item label="学历" prop="education">
-          <el-input v-model="form.education" placeholder="请输入学历" />
+          <el-select v-model="form.education" placeholder="请选择学历">
+            <el-option
+              v-for="dict in dict.type.sys_education"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="期望工资" prop="expectedSalary">
           <el-input v-model="form.expectedSalary" placeholder="请输入期望工资" />
         </el-form-item>
         <el-form-item label="应聘职位" prop="positionApplied">
-          <el-input v-model="form.positionApplied" placeholder="请输入应聘职位" />
+          <el-select v-model="form.positionApplied" placeholder="请选择应聘职位">
+            <el-option
+              v-for="dict in dict.type.sys_job_want"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="求职状态" prop="jobStatus">
           <el-select v-model="form.jobStatus" placeholder="请选择求职状态">
@@ -230,6 +287,9 @@
         </el-form-item>
         <el-form-item label="工作经验" prop="workExperience">
           <el-input v-model="form.workExperience" placeholder="请输入工作经验" />
+        </el-form-item>
+        <el-form-item label="简历概要" prop="resumeKeyUrl">
+          <file-upload v-model="form.resumeKeyUrl"/>
         </el-form-item>
         <el-form-item label="简历" prop="resumeUrl">
           <file-upload v-model="form.resumeUrl"/>
@@ -248,11 +308,11 @@ import { listApplicant, getApplicant, delApplicant, addApplicant, updateApplican
 
 export default {
   name: "Applicant",
-  dicts: ['sys_user_sex', 'sys_job_applicants'],
+  dicts: ['sys_job_want', 'sys_education', 'sys_user_sex', 'sys_job_applicants'],
   data() {
     return {
+      editingRow: null, 
       baseURL: 'http://10.135.138.17:80/dev-api',
-
       // 遮罩层
       loading: true,
       // 选中数组
@@ -265,7 +325,7 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 应聘表格数据
+      // 招聘管理表格数据
       applicantList: [],
       // 弹出层标题
       title: "",
@@ -276,22 +336,21 @@ export default {
         pageNum: 1,
         pageSize: 10,
         name: null,
-        avatarUrl: null,
         gender: null,
         age: null,
+        phone: null,
         education: null,
         expectedSalary: null,
         positionApplied: null,
         jobStatus: null,
         workExperience: null,
-        resumeUrl: null
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
         name: [
-          { required: true, message: "姓名不能为空", trigger: "blur" }
+          { required: true, message: "用户姓名不能为空", trigger: "blur" }
         ],
       }
     };
@@ -300,6 +359,28 @@ export default {
     this.getList();
   },
   methods: {
+    editJobStatus(row) {
+    this.editingRow = row.userId; // 设置当前编辑的行为当前行的用户ID
+  },
+    updateJobStatus(row, newValue) {
+  const oldStatus = row.jobStatus;
+  const index = this.applicantList.findIndex(item => item.userId === row.userId);
+  if (index !== -1) {
+    updateApplicant({...row, jobStatus: newValue}).then(response => {
+      // 使用Vue.set来确保视图可以响应状态的更新
+      this.$set(this.applicantList[index], 'jobStatus', newValue);
+      this.$modal.msgSuccess("状态更新成功");
+      this.editingRow = null; // 重置正在编辑的行
+    }).catch(error => {
+      this.$set(this.applicantList[index], 'jobStatus', oldStatus); // 出错时回滚到旧状态
+      this.$modal.msgError("状态更新失败");
+      console.error("更新失败:", error);
+      this.editingRow = null; // 重置正在编辑的行
+    });
+  }
+},
+
+
     getFullURL(relativePath) {
     const parts = relativePath.split('/'); // 分割路径
     const encodedParts = parts.map((part, index) => {
@@ -308,7 +389,7 @@ export default {
     });
     return `${this.baseURL}/${encodedParts.join('/')}`; // 重新拼接路径
   },
-    /** 查询应聘列表 */
+    /** 查询招聘管理列表 */
     getList() {
       this.loading = true;
       listApplicant(this.queryParams).then(response => {
@@ -336,6 +417,7 @@ export default {
         positionApplied: null,
         jobStatus: null,
         workExperience: null,
+        resumeKeyUrl: null,
         resumeUrl: null
       };
       this.resetForm("form");
@@ -360,7 +442,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加应聘";
+      this.title = "添加招聘管理";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -369,7 +451,7 @@ export default {
       getApplicant(userId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改应聘";
+        this.title = "修改招聘管理";
       });
     },
     /** 提交按钮 */
@@ -395,7 +477,7 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const userIds = row.userId || this.ids;
-      this.$modal.confirm('是否确认删除应聘编号为"' + userIds + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除招聘管理编号为"' + userIds + '"的数据项？').then(function() {
         return delApplicant(userIds);
       }).then(() => {
         this.getList();

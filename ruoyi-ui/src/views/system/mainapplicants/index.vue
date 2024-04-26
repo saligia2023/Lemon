@@ -173,10 +173,26 @@
         </template>
       </el-table-column>
       <el-table-column label="求职状态" align="center" prop="jobStatus">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_job_applicants" :value="scope.row.jobStatus"/>
-        </template>
-      </el-table-column>
+  <template slot-scope="scope">
+    <!-- 显示标签，非编辑状态 -->
+    <div v-if="editingRow !== scope.row.userId">
+      <dict-tag :options="dict.type.sys_job_applicants" :value="scope.row.jobStatus" @click.native="editJobStatus(scope.row)"/>
+    </div>
+    <!-- 编辑状态，显示下拉选择 -->
+    <el-select v-else v-model="scope.row.jobStatus" placeholder="请选择求职状态"
+               @change="updateJobStatus(scope.row, $event)"
+               >
+      <el-option
+        v-for="dict in dict.type.sys_job_applicants"
+        :key="dict.value"
+        :label="dict.label"
+        :value="dict.value">
+      </el-option>
+    </el-select>
+  </template>
+</el-table-column>
+
+
       <el-table-column label="工作经验" align="center" prop="workExperience" />
       <el-table-column label="匹配度" align="center" prop="matchPercentage" />
       <el-table-column label="风险评估" align="center" prop="riskAssessment">
@@ -327,6 +343,8 @@ export default {
   dicts: ['sys_job_want', 'sys_education', 'sys_risk', 'sys_user_sex', 'sys_job_applicants'],
   data() {
     return {
+      editingRow: null,
+  
       baseURL: 'http://10.135.138.17:80/dev-api',
       // 遮罩层
       loading: true,
@@ -378,6 +396,31 @@ export default {
     this.getList();
   },
   methods: {
+    editJobStatus(row) {
+      this.editingRow = row.userId; // 否则设置为编辑状态
+    },
+    updateJobStatus(row, newValue) {
+  const oldStatus = row.jobStatus;
+  const index = this.mainapplicantsList.findIndex(item => item.userId === row.userId);
+  if (index !== -1) {
+    updateMainapplicants({...row, jobStatus: newValue}).then(response => {
+      // 使用Vue.set来确保视图可以响应状态的更新
+      this.$set(this.mainapplicantsList[index], 'jobStatus', newValue);
+      this.$modal.msgSuccess("状态更新成功");
+      this.editingRow = null; // 重置正在编辑的行
+    }).catch(error => {
+      this.$set(this.mainapplicantsList[index], 'jobStatus', oldStatus); // 出错时回滚到旧状态
+      this.$modal.msgError("状态更新失败");
+      console.error("更新失败:", error);
+      this.editingRow = null; // 重置正在编辑的行
+    });
+  }
+},
+
+
+
+
+
     getFullURL(relativePath) {
     const parts = relativePath.split('/'); // 分割路径
     const encodedParts = parts.map((part, index) => {

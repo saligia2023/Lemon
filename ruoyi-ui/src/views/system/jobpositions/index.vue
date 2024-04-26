@@ -110,7 +110,7 @@
       查看简历
     </a>
     <!-- 可选：如果没有附件，显示提示信息 -->
-    <span v-else>未上传</span>
+    <span v-else>无</span>
   </template>
 </el-table-column>
 

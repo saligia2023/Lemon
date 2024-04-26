@@ -47,6 +47,14 @@ export default {
       this.chart = echarts.init(this.$el, 'macarons')
 
       this.chart.setOption({
+        title: {
+    text: '不同页面浏览人数', // 设置标题文本
+    left: 'right', // 标题居中显示
+    textStyle: {
+      fontSize: 12, // 标题字体大小
+      fontWeight: 'bold' // 标题字体粗细
+    }
+  },
         tooltip: {
           trigger: 'axis',
           axisPointer: { // 坐标轴指示器，坐标轴触发有效
@@ -74,25 +82,25 @@ export default {
           }
         }],
         series: [{
-          name: 'pageA',
+          name: '数据分析',
           type: 'bar',
           stack: 'vistors',
           barWidth: '60%',
-          data: [79, 52, 200, 334, 390, 330, 220],
+          data: [7, 5, 2, 3, 3, 3, 2],
           animationDuration
         }, {
-          name: 'pageB',
+          name: '首页',
           type: 'bar',
           stack: 'vistors',
           barWidth: '60%',
-          data: [80, 52, 200, 334, 390, 330, 220],
+          data: [10, 5, 8, 7, 5, 8, 11],
           animationDuration
         }, {
-          name: 'pageC',
+          name: '应聘成员',
           type: 'bar',
           stack: 'vistors',
           barWidth: '60%',
-          data: [30, 52, 200, 334, 390, 330, 220],
+          data: [6, 2, 2, 4, 1, 5, 2],
           animationDuration
         }]
       })
