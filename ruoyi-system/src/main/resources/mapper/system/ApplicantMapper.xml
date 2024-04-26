@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ApplicantMapper">
+    
+    <resultMap type="Applicant" id="ApplicantResult">
+        <result property="userId"    column="user_id"    />
+        <result property="name"    column="name"    />
+        <result property="avatarUrl"    column="avatar_url"    />
+        <result property="gender"    column="gender"    />
+        <result property="age"    column="age"    />
+        <result property="phone"    column="phone"    />
+        <result property="education"    column="education"    />
+        <result property="expectedSalary"    column="expected_salary"    />
+        <result property="positionApplied"    column="position_applied"    />
+        <result property="jobStatus"    column="job_status"    />
+        <result property="workExperience"    column="work_experience"    />
+        <result property="resumeKeyUrl"    column="resume_key_url"    />
+        <result property="resumeUrl"    column="resume_url"    />
+    </resultMap>
+
+    <sql id="selectApplicantVo">
+        select user_id, name, avatar_url, gender, age, phone, education, expected_salary, position_applied, job_status, work_experience, resume_key_url, resume_url from applicant
+    </sql>
+
+    <select id="selectApplicantList" parameterType="Applicant" resultMap="ApplicantResult">
+        <include refid="selectApplicantVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="gender != null  and gender != ''"> and gender = #{gender}</if>
+            <if test="params.beginAge != null and params.beginAge != '' and params.endAge != null and params.endAge != ''"> and age between #{params.beginAge} and #{params.endAge}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="education != null  and education != ''"> and education = #{education}</if>
+            <if test="params.beginExpectedSalary != null and params.beginExpectedSalary != '' and params.endExpectedSalary != null and params.endExpectedSalary != ''"> and expected_salary between #{params.beginExpectedSalary} and #{params.endExpectedSalary}</if>
+            <if test="positionApplied != null  and positionApplied != ''"> and position_applied = #{positionApplied}</if>
+            <if test="jobStatus != null  and jobStatus != ''"> and job_status = #{jobStatus}</if>
+            <if test="params.beginWorkExperience != null and params.beginWorkExperience != '' and params.endWorkExperience != null and params.endWorkExperience != ''"> and work_experience between #{params.beginWorkExperience} and #{params.endWorkExperience}</if>
+        </where>
+    </select>
+    
+    <select id="selectApplicantByUserId" parameterType="Long" resultMap="ApplicantResult">
+        <include refid="selectApplicantVo"/>
+        where user_id = #{userId}
+    </select>
+        
+    <insert id="insertApplicant" parameterType="Applicant" useGeneratedKeys="true" keyProperty="userId">
+        insert into applicant
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="avatarUrl != null">avatar_url,</if>
+            <if test="gender != null">gender,</if>
+            <if test="age != null">age,</if>
+            <if test="phone != null">phone,</if>
+            <if test="education != null">education,</if>
+            <if test="expectedSalary != null">expected_salary,</if>
+            <if test="positionApplied != null">position_applied,</if>
+            <if test="jobStatus != null">job_status,</if>
+            <if test="workExperience != null">work_experience,</if>
+            <if test="resumeKeyUrl != null">resume_key_url,</if>
+            <if test="resumeUrl != null">resume_url,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="avatarUrl != null">#{avatarUrl},</if>
+            <if test="gender != null">#{gender},</if>
+            <if test="age != null">#{age},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="education != null">#{education},</if>
+            <if test="expectedSalary != null">#{expectedSalary},</if>
+            <if test="positionApplied != null">#{positionApplied},</if>
+            <if test="jobStatus != null">#{jobStatus},</if>
+            <if test="workExperience != null">#{workExperience},</if>
+            <if test="resumeKeyUrl != null">#{resumeKeyUrl},</if>
+            <if test="resumeUrl != null">#{resumeUrl},</if>
+         </trim>
+    </insert>
+
+    <update id="updateApplicant" parameterType="Applicant">
+        update applicant
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="avatarUrl != null">avatar_url = #{avatarUrl},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="age != null">age = #{age},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="education != null">education = #{education},</if>
+            <if test="expectedSalary != null">expected_salary = #{expectedSalary},</if>
+            <if test="positionApplied != null">position_applied = #{positionApplied},</if>
+            <if test="jobStatus != null">job_status = #{jobStatus},</if>
+            <if test="workExperience != null">work_experience = #{workExperience},</if>
+            <if test="resumeKeyUrl != null">resume_key_url = #{resumeKeyUrl},</if>
+            <if test="resumeUrl != null">resume_url = #{resumeUrl},</if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteApplicantByUserId" parameterType="Long">
+        delete from applicant where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteApplicantByUserIds" parameterType="String">
+        delete from applicant where user_id in 
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+</mapper>

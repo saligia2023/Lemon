@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.JobMapper">
+    
+    <resultMap type="Job" id="JobResult">
+        <result property="ID"    column="ID"    />
+        <result property="JobTitle"    column="JobTitle"    />
+        <result property="RecruitmentStatus"    column="RecruitmentStatus"    />
+        <result property="Department"    column="Department"    />
+        <result property="JobDescription"    column="JobDescription"    />
+        <result property="JobResponsibilities"    column="JobResponsibilities"    />
+        <result property="Attachment"    column="Attachment"    />
+    </resultMap>
+
+    <sql id="selectJobVo">
+        select ID, JobTitle, RecruitmentStatus, Department, JobDescription, JobResponsibilities, Attachment from job
+    </sql>
+
+    <select id="selectJobList" parameterType="Job" resultMap="JobResult">
+        <include refid="selectJobVo"/>
+        <where>  
+            <if test="JobTitle != null  and JobTitle != ''"> and JobTitle = #{JobTitle}</if>
+            <if test="RecruitmentStatus != null  and RecruitmentStatus != ''"> and RecruitmentStatus = #{RecruitmentStatus}</if>
+            <if test="Department != null  and Department != ''"> and Department = #{Department}</if>
+            <if test="JobDescription != null  and JobDescription != ''"> and JobDescription = #{JobDescription}</if>
+            <if test="JobResponsibilities != null  and JobResponsibilities != ''"> and JobResponsibilities = #{JobResponsibilities}</if>
+            <if test="Attachment != null  and Attachment != ''"> and Attachment = #{Attachment}</if>
+        </where>
+    </select>
+    
+    <select id="selectJobByID" parameterType="Long" resultMap="JobResult">
+        <include refid="selectJobVo"/>
+        where ID = #{ID}
+    </select>
+        
+    <insert id="insertJob" parameterType="Job">
+        insert into job
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ID != null">ID,</if>
+            <if test="JobTitle != null and JobTitle != ''">JobTitle,</if>
+            <if test="RecruitmentStatus != null">RecruitmentStatus,</if>
+            <if test="Department != null">Department,</if>
+            <if test="JobDescription != null">JobDescription,</if>
+            <if test="JobResponsibilities != null">JobResponsibilities,</if>
+            <if test="Attachment != null">Attachment,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ID != null">#{ID},</if>
+            <if test="JobTitle != null and JobTitle != ''">#{JobTitle},</if>
+            <if test="RecruitmentStatus != null">#{RecruitmentStatus},</if>
+            <if test="Department != null">#{Department},</if>
+            <if test="JobDescription != null">#{JobDescription},</if>
+            <if test="JobResponsibilities != null">#{JobResponsibilities},</if>
+            <if test="Attachment != null">#{Attachment},</if>
+         </trim>
+    </insert>
+
+    <update id="updateJob" parameterType="Job">
+        update job
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="JobTitle != null and JobTitle != ''">JobTitle = #{JobTitle},</if>
+            <if test="RecruitmentStatus != null">RecruitmentStatus = #{RecruitmentStatus},</if>
+            <if test="Department != null">Department = #{Department},</if>
+            <if test="JobDescription != null">JobDescription = #{JobDescription},</if>
+            <if test="JobResponsibilities != null">JobResponsibilities = #{JobResponsibilities},</if>
+            <if test="Attachment != null">Attachment = #{Attachment},</if>
+        </trim>
+        where ID = #{ID}
+    </update>
+
+    <delete id="deleteJobByID" parameterType="Long">
+        delete from job where ID = #{ID}
+    </delete>
+
+    <delete id="deleteJobByIDs" parameterType="String">
+        delete from job where ID in 
+        <foreach item="ID" collection="array" open="(" separator="," close=")">
+            #{ID}
+        </foreach>
+    </delete>
+</mapper>

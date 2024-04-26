@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.JobpositionsMapper">
+    
+    <resultMap type="Jobpositions" id="JobpositionsResult">
+        <result property="id"    column="id"    />
+        <result property="positionName"    column="position_name"    />
+        <result property="recruitmentStatus"    column="recruitment_status"    />
+        <result property="department"    column="department"    />
+        <result property="positionDescription"    column="position_description"    />
+        <result property="positionResponsibilities"    column="position_responsibilities"    />
+        <result property="attachmentUrl"    column="attachment_url"    />
+    </resultMap>
+
+    <sql id="selectJobpositionsVo">
+        select id, position_name, recruitment_status, department, position_description, position_responsibilities, attachment_url from jobpositions
+    </sql>
+
+    <select id="selectJobpositionsList" parameterType="Jobpositions" resultMap="JobpositionsResult">
+        <include refid="selectJobpositionsVo"/>
+        <where>  
+            <if test="positionName != null  and positionName != ''"> and position_name like concat('%', #{positionName}, '%')</if>
+            <if test="recruitmentStatus != null  and recruitmentStatus != ''"> and recruitment_status = #{recruitmentStatus}</if>
+            <if test="department != null  and department != ''"> and department = #{department}</if>
+            <if test="positionDescription != null  and positionDescription != ''"> and position_description like concat('%', #{positionDescription}, '%')</if>
+            <if test="positionResponsibilities != null  and positionResponsibilities != ''"> and position_responsibilities like concat('%', #{positionResponsibilities}, '%')</if>
+            <if test="attachmentUrl != null  and attachmentUrl != ''"> and attachment_url = #{attachmentUrl}</if>
+        </where>
+    </select>
+    
+    <select id="selectJobpositionsById" parameterType="Long" resultMap="JobpositionsResult">
+        <include refid="selectJobpositionsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertJobpositions" parameterType="Jobpositions" useGeneratedKeys="true" keyProperty="id">
+        insert into jobpositions
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="positionName != null and positionName != ''">position_name,</if>
+            <if test="recruitmentStatus != null and recruitmentStatus != ''">recruitment_status,</if>
+            <if test="department != null and department != ''">department,</if>
+            <if test="positionDescription != null">position_description,</if>
+            <if test="positionResponsibilities != null">position_responsibilities,</if>
+            <if test="attachmentUrl != null">attachment_url,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="positionName != null and positionName != ''">#{positionName},</if>
+            <if test="recruitmentStatus != null and recruitmentStatus != ''">#{recruitmentStatus},</if>
+            <if test="department != null and department != ''">#{department},</if>
+            <if test="positionDescription != null">#{positionDescription},</if>
+            <if test="positionResponsibilities != null">#{positionResponsibilities},</if>
+            <if test="attachmentUrl != null">#{attachmentUrl},</if>
+         </trim>
+    </insert>
+
+    <update id="updateJobpositions" parameterType="Jobpositions">
+        update jobpositions
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="positionName != null and positionName != ''">position_name = #{positionName},</if>
+            <if test="recruitmentStatus != null and recruitmentStatus != ''">recruitment_status = #{recruitmentStatus},</if>
+            <if test="department != null and department != ''">department = #{department},</if>
+            <if test="positionDescription != null">position_description = #{positionDescription},</if>
+            <if test="positionResponsibilities != null">position_responsibilities = #{positionResponsibilities},</if>
+            <if test="attachmentUrl != null">attachment_url = #{attachmentUrl},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteJobpositionsById" parameterType="Long">
+        delete from jobpositions where id = #{id}
+    </delete>
+
+    <delete id="deleteJobpositionsByIds" parameterType="String">
+        delete from jobpositions where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

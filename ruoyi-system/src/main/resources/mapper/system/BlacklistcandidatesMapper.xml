@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BlacklistcandidatesMapper">
+    
+    <resultMap type="Blacklistcandidates" id="BlacklistcandidatesResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="gender"    column="gender"    />
+        <result property="age"    column="age"    />
+        <result property="phone"    column="phone"    />
+        <result property="education"    column="education"    />
+        <result property="expectedSalary"    column="expected_salary"    />
+        <result property="positionApplied"    column="position_applied"    />
+        <result property="workExperience"    column="work_experience"    />
+        <result property="matchPercentage"    column="match_percentage"    />
+        <result property="riskAssessment"    column="risk_assessment"    />
+        <result property="riskSummary"    column="risk_summary"    />
+        <result property="resume"    column="resume"    />
+    </resultMap>
+
+    <sql id="selectBlacklistcandidatesVo">
+        select id, name, gender, age, phone, education, expected_salary, position_applied, work_experience, match_percentage, risk_assessment, risk_summary, resume from blacklistcandidates
+    </sql>
+
+    <select id="selectBlacklistcandidatesList" parameterType="Blacklistcandidates" resultMap="BlacklistcandidatesResult">
+        <include refid="selectBlacklistcandidatesVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="gender != null  and gender != ''"> and gender = #{gender}</if>
+            <if test="age != null "> and age = #{age}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="education != null  and education != ''"> and education = #{education}</if>
+            <if test="expectedSalary != null "> and expected_salary = #{expectedSalary}</if>
+            <if test="positionApplied != null  and positionApplied != ''"> and position_applied = #{positionApplied}</if>
+            <if test="workExperience != null "> and work_experience = #{workExperience}</if>
+            <if test="matchPercentage != null "> and match_percentage = #{matchPercentage}</if>
+            <if test="riskAssessment != null  and riskAssessment != ''"> and risk_assessment = #{riskAssessment}</if>
+            <if test="riskSummary != null  and riskSummary != ''"> and risk_summary = #{riskSummary}</if>
+            <if test="resume != null  and resume != ''"> and resume = #{resume}</if>
+        </where>
+    </select>
+    
+    <select id="selectBlacklistcandidatesById" parameterType="Long" resultMap="BlacklistcandidatesResult">
+        <include refid="selectBlacklistcandidatesVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertBlacklistcandidates" parameterType="Blacklistcandidates" useGeneratedKeys="true" keyProperty="id">
+        insert into blacklistcandidates
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="gender != null">gender,</if>
+            <if test="age != null">age,</if>
+            <if test="phone != null">phone,</if>
+            <if test="education != null">education,</if>
+            <if test="expectedSalary != null">expected_salary,</if>
+            <if test="positionApplied != null">position_applied,</if>
+            <if test="workExperience != null">work_experience,</if>
+            <if test="matchPercentage != null">match_percentage,</if>
+            <if test="riskAssessment != null">risk_assessment,</if>
+            <if test="riskSummary != null">risk_summary,</if>
+            <if test="resume != null">resume,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="gender != null">#{gender},</if>
+            <if test="age != null">#{age},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="education != null">#{education},</if>
+            <if test="expectedSalary != null">#{expectedSalary},</if>
+            <if test="positionApplied != null">#{positionApplied},</if>
+            <if test="workExperience != null">#{workExperience},</if>
+            <if test="matchPercentage != null">#{matchPercentage},</if>
+            <if test="riskAssessment != null">#{riskAssessment},</if>
+            <if test="riskSummary != null">#{riskSummary},</if>
+            <if test="resume != null">#{resume},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBlacklistcandidates" parameterType="Blacklistcandidates">
+        update blacklistcandidates
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="age != null">age = #{age},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="education != null">education = #{education},</if>
+            <if test="expectedSalary != null">expected_salary = #{expectedSalary},</if>
+            <if test="positionApplied != null">position_applied = #{positionApplied},</if>
+            <if test="workExperience != null">work_experience = #{workExperience},</if>
+            <if test="matchPercentage != null">match_percentage = #{matchPercentage},</if>
+            <if test="riskAssessment != null">risk_assessment = #{riskAssessment},</if>
+            <if test="riskSummary != null">risk_summary = #{riskSummary},</if>
+            <if test="resume != null">resume = #{resume},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBlacklistcandidatesById" parameterType="Long">
+        delete from blacklistcandidates where id = #{id}
+    </delete>
+
+    <delete id="deleteBlacklistcandidatesByIds" parameterType="String">
+        delete from blacklistcandidates where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
