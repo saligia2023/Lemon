@@ -150,7 +150,7 @@
         plain
         size="mini"
         @click="handleBackgroundCheck1"
-        v-hasPermi="['system:jobapp:background']"
+
       >背景调查1</el-button>
     </el-col>
     <el-col :span="1.5">
@@ -159,7 +159,7 @@
         plain
         size="mini"
         @click="handleBackgroundCheck2"
-        v-hasPermi="['system:jobapp:background']"
+
       >背景调查2</el-button>
     </el-col>
     <el-col :span="1.5">
@@ -168,7 +168,7 @@
         plain
         size="mini"
         @click="handleBackgroundCheck3"
-        v-hasPermi="['system:jobapp:background']"
+
       >背景调查3</el-button>
     </el-col>
     </el-row>
@@ -429,13 +429,13 @@ export default {
   },
   methods: {
     handleBackgroundCheck1() {
-      window.location.href = 'https://www.yinuobeidiao.com/';
+      window.open('https://www.yinuobeidiao.com/');
     },
     handleBackgroundCheck2() {
-      window.location.href = 'https://www.ibeidiao.com/';
+      window.open ('https://www.ibeidiao.com/');
     }, 
     handleBackgroundCheck3() {
-      window.location.href = 'https://www.zmbeidiao.com/';
+      window.open ('https://www.zmbeidiao.com/');
     },
     editJobStatus(row) {
       this.editingRow = row.userId; // 否则设置为编辑状态

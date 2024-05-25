@@ -9,7 +9,7 @@
           <div class="card-panel-text">
             投入简历人数
           </div>
-          <count-to :start-val="0" :end-val="24" :duration="2600" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="11" :duration="2600" class="card-panel-num" />
         </div>
       </div>
     </el-col>

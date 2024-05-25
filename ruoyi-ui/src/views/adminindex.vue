@@ -192,7 +192,7 @@ methods: {
     const myzx = this.$echarts.init(this.$refs.zx, 'macarons')
     myzx.setOption( {
         title: {
-          text: '候选人渠道'
+          text: '应聘渠道'
         },
         tooltip: {
           trigger: 'axis'
@@ -263,7 +263,7 @@ methods: {
         }
       },
       legend: {
-        data: ['实际', '差值', '预期'] // 添加新系列的名称
+        data: ['预期', '差值', '实际'] // 添加新系列的名称
       },
       grid: {
         left: '3%',
@@ -287,7 +287,7 @@ methods: {
       ],
       series: [
         {
-          name: '预期',
+          name: '实际',
           type: 'bar',
           label: {
             show: true,
@@ -313,7 +313,7 @@ methods: {
           data: [-3, -6, -7, -4, -4, -5, -5,-3]
         },
         {
-          name: '实际', // 新增系列的名称
+          name: '预期', // 新增系列的名称
           type: 'bar', // 新增系列的类型为柱形图
           label: {
             show: true
@@ -351,20 +351,22 @@ methods: {
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          data: ['6.27','5.28', '5.29', '5.30', '5.31', '6.1', '6.2', '6.3']
+          data: ['5.27','5.28', '5.29', '5.30', '5.31', '6.1', '6.2', '6.3']
         },
         yAxis: {
           type: 'value',
-          min:0.5,
-          max:1
+          min: 0,
+          max: 2.0,
+          interval: 0.2
+
         },
         series: [
           {
-            name: 'Email',
+            name: '比值',
             type: 'line',
             smooth: false,
             stack: 'Total',
-            data: [0.7, 0.8, 0.76, 0.74, 0.84, 0.76, 0.86,0.73]
+            data: [0.6, 0.84, 0.72, 1.43, 1.76, 0.44, 0.91,1.1]
           },
 
         ]
