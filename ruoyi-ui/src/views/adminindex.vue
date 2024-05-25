@@ -214,7 +214,7 @@ methods: {
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          data: ['4.9', '4.12', '4.15', '4.18', '4.21', '4.24', '4.27','4.30']
+          data: ['5.28', '5.29', '5.30', '5.31', '6.1', '6.2', '6.3','6.4']
         },
         yAxis: {
           type: 'value'
@@ -331,7 +331,7 @@ methods: {
     myzxt.setOption(
       {
         title: {
-          text: '预测准确度'
+          text: '预测录用比'
         },
         tooltip: {
           trigger: 'axis'
@@ -351,7 +351,7 @@ methods: {
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          data: ['4.21', '4.22', '4.23', '4.24', '4.25', '4.26', '4.27','4.28']
+          data: ['6.27','5.28', '5.29', '5.30', '5.31', '6.1', '6.2', '6.3']
         },
         yAxis: {
           type: 'value',
@@ -364,7 +364,7 @@ methods: {
             type: 'line',
             smooth: false,
             stack: 'Total',
-            data: [0.54, 0.80, 0.71, 0.62, 0.85, 0.71, 0.81,0.68]
+            data: [0.7, 0.8, 0.76, 0.74, 0.84, 0.76, 0.86,0.73]
           },
 
         ]

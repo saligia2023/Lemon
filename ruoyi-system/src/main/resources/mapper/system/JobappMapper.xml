@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.JobappMapper">
+    
+    <resultMap type="Jobapp" id="JobappResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="gender"    column="gender"    />
+        <result property="age"    column="age"    />
+        <result property="phone"    column="phone"    />
+        <result property="education"    column="education"    />
+        <result property="expectedSalary"    column="expected_salary"    />
+        <result property="positionApplied"    column="position_applied"    />
+        <result property="jobStatus"    column="job_status"    />
+        <result property="workExperience"    column="work_experience"    />
+        <result property="matchPercentage"    column="match_percentage"    />
+        <result property="riskAssessment"    column="risk_assessment"    />
+        <result property="riskSummaryUrl"    column="risk_summary_url"    />
+        <result property="resumeUrl"    column="resume_url"    />
+    </resultMap>
+
+    <sql id="selectJobappVo">
+        select id, name, gender, age, phone, education, expected_salary, position_applied, job_status, work_experience, match_percentage, risk_assessment, risk_summary_url, resume_url from jobapp
+    </sql>
+
+    <select id="selectJobappList" parameterType="Jobapp" resultMap="JobappResult">
+        <include refid="selectJobappVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="gender != null  and gender != ''"> and gender = #{gender}</if>
+            <if test="age != null "> and age = #{age}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="education != null  and education != ''"> and education = #{education}</if>
+            <if test="expectedSalary != null  and expectedSalary != ''"> and expected_salary = #{expectedSalary}</if>
+            <if test="positionApplied != null  and positionApplied != ''"> and position_applied = #{positionApplied}</if>
+            <if test="jobStatus != null  and jobStatus != ''"> and job_status = #{jobStatus}</if>
+            <if test="workExperience != null  and workExperience != ''"> and work_experience = #{workExperience}</if>
+            <if test="matchPercentage != null "> and match_percentage = #{matchPercentage}</if>
+            <if test="riskAssessment != null  and riskAssessment != ''"> and risk_assessment = #{riskAssessment}</if>
+            <if test="riskSummaryUrl != null  and riskSummaryUrl != ''"> and risk_summary_url = #{riskSummaryUrl}</if>
+            <if test="resumeUrl != null  and resumeUrl != ''"> and resume_url = #{resumeUrl}</if>
+        </where>
+    </select>
+    
+    <select id="selectJobappById" parameterType="Long" resultMap="JobappResult">
+        <include refid="selectJobappVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertJobapp" parameterType="Jobapp" useGeneratedKeys="true" keyProperty="id">
+        insert into jobapp
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="gender != null">gender,</if>
+            <if test="age != null">age,</if>
+            <if test="phone != null">phone,</if>
+            <if test="education != null">education,</if>
+            <if test="expectedSalary != null">expected_salary,</if>
+            <if test="positionApplied != null">position_applied,</if>
+            <if test="jobStatus != null">job_status,</if>
+            <if test="workExperience != null">work_experience,</if>
+            <if test="matchPercentage != null">match_percentage,</if>
+            <if test="riskAssessment != null">risk_assessment,</if>
+            <if test="riskSummaryUrl != null">risk_summary_url,</if>
+            <if test="resumeUrl != null">resume_url,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="gender != null">#{gender},</if>
+            <if test="age != null">#{age},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="education != null">#{education},</if>
+            <if test="expectedSalary != null">#{expectedSalary},</if>
+            <if test="positionApplied != null">#{positionApplied},</if>
+            <if test="jobStatus != null">#{jobStatus},</if>
+            <if test="workExperience != null">#{workExperience},</if>
+            <if test="matchPercentage != null">#{matchPercentage},</if>
+            <if test="riskAssessment != null">#{riskAssessment},</if>
+            <if test="riskSummaryUrl != null">#{riskSummaryUrl},</if>
+            <if test="resumeUrl != null">#{resumeUrl},</if>
+         </trim>
+    </insert>
+
+    <update id="updateJobapp" parameterType="Jobapp">
+        update jobapp
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="age != null">age = #{age},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="education != null">education = #{education},</if>
+            <if test="expectedSalary != null">expected_salary = #{expectedSalary},</if>
+            <if test="positionApplied != null">position_applied = #{positionApplied},</if>
+            <if test="jobStatus != null">job_status = #{jobStatus},</if>
+            <if test="workExperience != null">work_experience = #{workExperience},</if>
+            <if test="matchPercentage != null">match_percentage = #{matchPercentage},</if>
+            <if test="riskAssessment != null">risk_assessment = #{riskAssessment},</if>
+            <if test="riskSummaryUrl != null">risk_summary_url = #{riskSummaryUrl},</if>
+            <if test="resumeUrl != null">resume_url = #{resumeUrl},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteJobappById" parameterType="Long">
+        delete from jobapp where id = #{id}
+    </delete>
+
+    <delete id="deleteJobappByIds" parameterType="String">
+        delete from jobapp where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

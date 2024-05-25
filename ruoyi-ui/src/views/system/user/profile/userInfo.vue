@@ -15,6 +15,15 @@
         <el-radio label="1">女</el-radio>
       </el-radio-group>
     </el-form-item>
+    <el-form-item label="背调网址1" prop="website1">
+      <el-input v-model="form.website1" maxlength="100" />
+    </el-form-item>
+    <el-form-item label="背调网址2" prop="website2">
+      <el-input v-model="form.website2" maxlength="100" />
+    </el-form-item>
+    <el-form-item label="背调网址3" prop="website3">
+      <el-input v-model="form.website3" maxlength="100" />
+    </el-form-item>
     <el-form-item>
       <el-button type="primary" size="mini" @click="submit">保存</el-button>
       <el-button type="danger" size="mini" @click="close">关闭</el-button>
@@ -28,24 +37,24 @@ import { updateUserProfile } from "@/api/system/user";
 export default {
   props: {
     user: {
-      type: Object
+      type: Object,
+      default: () => ({})
     }
   },
   data() {
     return {
-      form: {},
-      // 表单校验
+      form: {
+        nickName: '',
+        phonenumber: '',
+        email: '',
+        sex: '',
+        website1: localStorage.getItem('website1') ,
+        website2: localStorage.getItem('website2') ,
+        website3: localStorage.getItem('website3') 
+      },
       rules: {
         nickName: [
           { required: true, message: "用户昵称不能为空", trigger: "blur" }
-        ],
-        email: [
-          { required: true, message: "邮箱地址不能为空", trigger: "blur" },
-          {
-            type: "email",
-            message: "请输入正确的邮箱地址",
-            trigger: ["blur", "change"]
-          }
         ],
         phonenumber: [
           { required: true, message: "手机号码不能为空", trigger: "blur" },
@@ -54,16 +63,21 @@ export default {
             message: "请输入正确的手机号码",
             trigger: "blur"
           }
+        ],
+        email: [
+          { required: true, message: "邮箱地址不能为空", trigger: "blur" },
+          { type: "email", message: "请输入正确的邮箱地址", trigger: ["blur", "change"] }
         ]
       }
     };
   },
   watch: {
     user: {
-      handler(user) {
-        if (user) {
-          this.form = { nickName: user.nickName, phonenumber: user.phonenumber, email: user.email, sex: user.sex };
-        }
+      handler(newUser) {
+        this.form = {
+          ...this.form,
+          ...newUser
+        };
       },
       immediate: true
     }
@@ -72,16 +86,19 @@ export default {
     submit() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          updateUserProfile(this.form).then(response => {
-            this.$modal.msgSuccess("修改成功");
-            this.user.phonenumber = this.form.phonenumber;
-            this.user.email = this.form.email;
+          localStorage.setItem('website1', this.form.website1);
+          localStorage.setItem('website2', this.form.website2);
+          localStorage.setItem('website3', this.form.website3);
+
+          updateUserProfile(this.form).then(() => {
+            this.$emit('update:user', { ...this.form });
+            this.$message.success("修改成功");
           });
         }
       });
     },
     close() {
-      this.$tab.closePage();
+      this.$emit('close');
     }
   }
 };

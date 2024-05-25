@@ -91,11 +91,26 @@
           <dict-tag :options="dict.type.sys_job_want" :value="scope.row.positionName"/>
         </template>
       </el-table-column>
-      <el-table-column label="招聘状态" align="center" prop="recruitmentStatus">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_recruitmentstatus" :value="scope.row.recruitmentStatus"/>
-        </template>
-      </el-table-column>
+      <el-table-column label="发布状态" align="center" prop="recruitmentStatus">
+  <template slot-scope="scope">
+    <!-- 显示标签，非编辑状态 -->
+    <div v-if="editingRow !== scope.row.userId">
+      <dict-tag :options="dict.type.sys_recruitmentstatus" :value="scope.row.recruitmentStatus" @click.native="editRecruitmentStatus(scope.row)"/>
+    </div>
+    <!-- 编辑状态，显示下拉选择 -->
+    <el-select v-else v-model="scope.row.recruitmentStatus" placeholder="请选择招聘状态"
+               @change="updateRecruitmentStatus(scope.row, $event)"
+               >
+      <el-option
+        v-for="dict in dict.type.sys_recruitmentstatus"
+        :key="dict.value"
+        :label="dict.label"
+        :value="dict.value">
+      </el-option>
+    </el-select>
+  </template>
+</el-table-column>
+
       <el-table-column label="所属部门" align="center" prop="department">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_department" :value="scope.row.department"/>
@@ -106,8 +121,8 @@
       <el-table-column label="附件" align="center" prop="attachmentUrl">
   <template slot-scope="scope">
     <!-- 只有当 attachmentUrl 存在且不为空时，才显示链接 -->
-    <a v-if="scope.row.attachmentUrl" :href="getFullURL(scope.row.attachmentUrl)" target="_blank" title="点击查看简历">
-      查看简历
+    <a v-if="scope.row.attachmentUrl" :href="getFullURL(scope.row.attachmentUrl)" target="_blank" title="点击查看">
+      查看附件
     </a>
     <!-- 可选：如果没有附件，显示提示信息 -->
     <span v-else>无</span>
@@ -201,6 +216,7 @@ export default {
   dicts: ['sys_job_want', 'sys_recruitmentstatus', 'sys_department'],
   data() {
     return {
+      editingRow: null,
       baseURL: 'http://10.135.138.17:80/dev-api',
       // 遮罩层
       loading: true,
@@ -251,6 +267,29 @@ export default {
     this.getList();
   },
   methods: {
+    
+  editRecruitmentStatus(row) {
+    this.editingRow = row.userId; // 设置为编辑状态
+  },
+  updateRecruitmentStatus(row, newValue) {
+    const oldStatus = row.recruitmentStatus;
+    const index = this.jobpositionsList.findIndex(item => item.userId === row.userId);
+    if (index !== -1) {
+      updateJobpositions({...row, recruitmentStatus: newValue}).then(response => {
+        // 使用Vue.set来确保视图可以响应状态的更新
+        this.$set(this.jobpositionsList[index], 'recruitmentStatus', newValue);
+        this.$modal.msgSuccess("状态更新成功");
+        this.editingRow = null; // 重置正在编辑的行
+      }).catch(error => {
+        this.$set(this.jobpositionsList[index], 'recruitmentStatus', oldStatus); // 出错时回滚到旧状态
+        this.$modal.msgError("状态更新失败");
+        console.error("更新失败:", error);
+        this.editingRow = null; // 重置正在编辑的行
+      });
+    }
+  },
+
+    
     getFullURL(relativePath) {
     const parts = relativePath.split('/'); // 分割路径
     const encodedParts = parts.map((part, index) => {

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.RecruitMapper">
+    
+    <resultMap type="Recruit" id="RecruitResult">
+        <result property="UserID"    column="UserID"    />
+        <result property="UserName"    column="UserName"    />
+        <result property="Gender"    column="Gender"    />
+        <result property="Age"    column="Age"    />
+        <result property="Phone"    column="Phone"    />
+        <result property="Education"    column="Education"    />
+        <result property="ExpectedSalary"    column="ExpectedSalary"    />
+        <result property="AppliedPosition"    column="AppliedPosition"    />
+        <result property="JobStatus"    column="JobStatus"    />
+        <result property="WorkExperience"    column="WorkExperience"    />
+        <result property="MatchScore"    column="MatchScore"    />
+        <result property="RiskAssessment"    column="RiskAssessment"    />
+        <result property="AnalysisSummaryURL"    column="AnalysisSummaryURL"    />
+        <result property="ResumeURL"    column="ResumeURL"    />
+    </resultMap>
+
+    <sql id="selectRecruitVo">
+        select UserID, UserName, Gender, Age, Phone, Education, ExpectedSalary, AppliedPosition, JobStatus, WorkExperience, MatchScore, RiskAssessment, AnalysisSummaryURL, ResumeURL from recruit
+    </sql>
+
+    <select id="selectRecruitList" parameterType="Recruit" resultMap="RecruitResult">
+        <include refid="selectRecruitVo"/>
+        <where>  
+            <if test="UserName != null  and UserName != ''"> and UserName like concat('%', #{UserName}, '%')</if>
+            <if test="Gender != null  and Gender != ''"> and Gender = #{Gender}</if>
+            <if test="Age != null "> and Age = #{Age}</if>
+            <if test="Phone != null  and Phone != ''"> and Phone = #{Phone}</if>
+            <if test="Education != null  and Education != ''"> and Education = #{Education}</if>
+            <if test="ExpectedSalary != null  and ExpectedSalary != ''"> and ExpectedSalary = #{ExpectedSalary}</if>
+            <if test="AppliedPosition != null  and AppliedPosition != ''"> and AppliedPosition = #{AppliedPosition}</if>
+            <if test="JobStatus != null  and JobStatus != ''"> and JobStatus = #{JobStatus}</if>
+            <if test="WorkExperience != null  and WorkExperience != ''"> and WorkExperience = #{WorkExperience}</if>
+            <if test="MatchScore != null "> and MatchScore = #{MatchScore}</if>
+            <if test="RiskAssessment != null  and RiskAssessment != ''"> and RiskAssessment = #{RiskAssessment}</if>
+            <if test="AnalysisSummaryURL != null  and AnalysisSummaryURL != ''"> and AnalysisSummaryURL = #{AnalysisSummaryURL}</if>
+            <if test="ResumeURL != null  and ResumeURL != ''"> and ResumeURL = #{ResumeURL}</if>
+        </where>
+    </select>
+    
+    <select id="selectRecruitByUserID" parameterType="Long" resultMap="RecruitResult">
+        <include refid="selectRecruitVo"/>
+        where UserID = #{UserID}
+    </select>
+        
+    <insert id="insertRecruit" parameterType="Recruit">
+        insert into recruit
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="UserID != null">UserID,</if>
+            <if test="UserName != null and UserName != ''">UserName,</if>
+            <if test="Gender != null">Gender,</if>
+            <if test="Age != null">Age,</if>
+            <if test="Phone != null">Phone,</if>
+            <if test="Education != null">Education,</if>
+            <if test="ExpectedSalary != null">ExpectedSalary,</if>
+            <if test="AppliedPosition != null">AppliedPosition,</if>
+            <if test="JobStatus != null">JobStatus,</if>
+            <if test="WorkExperience != null">WorkExperience,</if>
+            <if test="MatchScore != null">MatchScore,</if>
+            <if test="RiskAssessment != null">RiskAssessment,</if>
+            <if test="AnalysisSummaryURL != null">AnalysisSummaryURL,</if>
+            <if test="ResumeURL != null">ResumeURL,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="UserID != null">#{UserID},</if>
+            <if test="UserName != null and UserName != ''">#{UserName},</if>
+            <if test="Gender != null">#{Gender},</if>
+            <if test="Age != null">#{Age},</if>
+            <if test="Phone != null">#{Phone},</if>
+            <if test="Education != null">#{Education},</if>
+            <if test="ExpectedSalary != null">#{ExpectedSalary},</if>
+            <if test="AppliedPosition != null">#{AppliedPosition},</if>
+            <if test="JobStatus != null">#{JobStatus},</if>
+            <if test="WorkExperience != null">#{WorkExperience},</if>
+            <if test="MatchScore != null">#{MatchScore},</if>
+            <if test="RiskAssessment != null">#{RiskAssessment},</if>
+            <if test="AnalysisSummaryURL != null">#{AnalysisSummaryURL},</if>
+            <if test="ResumeURL != null">#{ResumeURL},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRecruit" parameterType="Recruit">
+        update recruit
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="UserName != null and UserName != ''">UserName = #{UserName},</if>
+            <if test="Gender != null">Gender = #{Gender},</if>
+            <if test="Age != null">Age = #{Age},</if>
+            <if test="Phone != null">Phone = #{Phone},</if>
+            <if test="Education != null">Education = #{Education},</if>
+            <if test="ExpectedSalary != null">ExpectedSalary = #{ExpectedSalary},</if>
+            <if test="AppliedPosition != null">AppliedPosition = #{AppliedPosition},</if>
+            <if test="JobStatus != null">JobStatus = #{JobStatus},</if>
+            <if test="WorkExperience != null">WorkExperience = #{WorkExperience},</if>
+            <if test="MatchScore != null">MatchScore = #{MatchScore},</if>
+            <if test="RiskAssessment != null">RiskAssessment = #{RiskAssessment},</if>
+            <if test="AnalysisSummaryURL != null">AnalysisSummaryURL = #{AnalysisSummaryURL},</if>
+            <if test="ResumeURL != null">ResumeURL = #{ResumeURL},</if>
+        </trim>
+        where UserID = #{UserID}
+    </update>
+
+    <delete id="deleteRecruitByUserID" parameterType="Long">
+        delete from recruit where UserID = #{UserID}
+    </delete>
+
+    <delete id="deleteRecruitByUserIDs" parameterType="String">
+        delete from recruit where UserID in 
+        <foreach item="UserID" collection="array" open="(" separator="," close=")">
+            #{UserID}
+        </foreach>
+    </delete>
+</mapper>

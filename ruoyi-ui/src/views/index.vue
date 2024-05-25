@@ -162,16 +162,15 @@
 
               </el-row>
 
-              <el-row style="flex: auto;">
-                <el-col :span="4">
-                  <el-form-item label="上传简历" prop="field118" required>
-                    <el-upload ref="field118" :file-list="field118fileList" :action="field118Action"
-                               :before-upload="field118BeforeUpload">
-                      <el-button size="small" type="primary" icon="el-icon-upload">点击上传</el-button>
-                    </el-upload>
-                  </el-form-item>
-                </el-col>
-              </el-row>
+              <FileUpload
+
+                :value="field118fileList"
+                :limit="1"
+                :fileSize="2"
+                :fileType="['doc', 'xls', 'ppt', 'txt', 'pdf']"
+                :isShowTip="true"
+                @input="handleFileListChange"
+              />
 
               <el-row style="flex: auto;">
                 <el-col :span="20">
@@ -208,7 +207,7 @@ import RaddarChart from './dashboard/RaddarChart'
 import PieChart from './dashboard/PieChart'
 import BarChart from './dashboard/BarChart'
 import { getUserProfile } from "@/api/system/user";
-
+import FileUpload from '@/components/FileUpload/index.vue';
 
 const lineChartData = {
   newVisitis: {
@@ -255,7 +254,7 @@ export default {
       formData: {
         field105: undefined,
         field106: 1,
-        field118: null,
+        field118fileList:[],
         field107: null,
         field104: undefined,
         mobile: '',
@@ -270,6 +269,11 @@ export default {
         field130: undefined
       },
       rules: {
+        filed118:[{
+          required: true,
+          message: '',
+          trigger: 'change'
+        }],
         field130: [{
           required: true,
           message: '请选择投递渠道',
@@ -472,19 +476,28 @@ export default {
         "label": "校园招聘",
         "value": 5
       }],
-      field115Options: [{
+      field115Options: [
+        {
         "label": "3k-6k",
         "value": 1
-      }, {
+      },
+        {
         "label": "6k-9k",
         "value": 2
-      }, {
+      },
+        {
         "label": "9k-12k",
         "value": 3
-      }, {
-        "label": "12k以上",
+      },
+        {
+        "label": "12k-16k",
         "value": 4
-      }],
+      },
+        {
+          "label":"16k以上",
+          "value": 5
+        },
+      ],
     }
   },
   computed: {},
@@ -507,17 +520,21 @@ export default {
       this.$refs['elForm'].validate(valid => {
         if (!valid) return
         // TODO 提交表单
+        setTimeout(() => {
+          // 提交成功后的处理
+          this.$message.success('提交成功！');
+          // 清空表单
+          this.resetForm();
+        }, 1000);
       })
     },
     resetForm() {
-      this.$refs['elForm'].resetFields()
+      this.$refs['elForm'].resetFields();
+      this.field118fileList = null;
     },
-    field118BeforeUpload(file) {
-      let isRightSize = file.size / 1024 / 1024 < 2
-      if (!isRightSize) {
-        this.$message.error('文件大小超过 2MB')
-      }
-      return isRightSize
+    handleFileListChange(fileList) {
+      this.field118fileList = fileList;
+      // 更新表单数据或执行其他必要操作
     },
   }
 }
@@ -588,7 +605,9 @@ export default {
 
   }
 }
-
+.el-upload__tip {
+  line-height: 1.2;
+}
 @media (max-width: 1024px) {
   .chart-wrapper {
     padding: 8px;
