@@ -64,9 +64,8 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="出生日期" prop="field107">
-                    <el-date-picker v-model="formData.field107" format="yyyy-MM-dd" value-format="yyyy-MM-dd"
-                                    :style="{width: '100%'}" placeholder="请选择出生日期" clearable></el-date-picker>
+                  <el-form-item label="年龄" prop="field107">
+                    <el-input v-model.number="formData.field107" placeholder="请输入年龄" clearable :style="{width: '100%'}"></el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -208,6 +207,7 @@ import PieChart from './dashboard/PieChart'
 import BarChart from './dashboard/BarChart'
 import { getUserProfile } from "@/api/system/user";
 import FileUpload from '@/components/FileUpload/index.vue';
+import { listJobapp, getJobapp, delJobapp, addJobapp, updateJobapp } from "@/api/system/jobapp";
 
 const lineChartData = {
   newVisitis: {
@@ -269,94 +269,20 @@ export default {
         field130: undefined
       },
       rules: {
-        filed118:[{
-          required: true,
-          message: '',
-          trigger: 'change'
-        }],
-        field130: [{
-          required: true,
-          message: '请选择投递渠道',
-          trigger: 'change'
-        }],
-        field105: [{
-          required: true,
-          message: '请输入姓名',
-          trigger: 'blur'
-        }],
-        field106: [{
-          required: true,
-          message: '',
-          trigger: 'change'
-        }],
-        field107: [{
-          required: true,
-          message: '请选择出生日期',
-          trigger: 'change'
-        }],
-        field104: [{
-          required: true,
-          message: '请输入籍贯',
-          trigger: 'blur'
-        }],
-        mobile: [{
-          required: true,
-          message: '请输入手机号',
-          trigger: 'blur'
-        }, {
-          pattern: /^1(3|4|5|7|8|9)\d{9}$/,
-          message: '手机号格式错误',
-          trigger: 'blur'
-        }],
-        field119: [{
-          required: true,
-          message: '输入请邮箱',
-          trigger: 'blur'
-        }],
-        field110: [{
-          required: true,
-          message: '请选择',
-          trigger: 'change'
-        }],
-        field108: [{
-          required: true,
-          message: '请选择应聘岗位',
-          trigger: 'change'
-        }],
-        field114: [{
-          required: true,
-          message: '请选择工作经验',
-          trigger: 'change'
-        }],
-        field115: [{
-          required: true,
-          message: '请选择期望薪资',
-          trigger: 'change'
-        }],
-        field116: [{
-          required: true,
-          message: '请输入工作经历',
-          trigger: 'blur'
-        }],
-        field117: [{
-          required: true,
-          message: '请输入获得荣耀',
-          trigger: 'blur'
-        }],
-        field120: [{
-          required: true,
-          message: '请输入自我评价',
-          trigger: 'blur'
-        }],
+        
+        field105: [
+          { required: true, message: "姓名不能为空", trigger: "blur" }
+        ],
+      
       },
       field118Action: 'https://jsonplaceholder.typicode.com/posts/',
       field118fileList: [],
       field106Options: [{
         "label": "男",
-        "value": 1
+        "value": 0
       }, {
         "label": "女",
-        "value": 2
+        "value": 1
       }],
       field110Options: [{
         "label": "初中毕业",
@@ -366,26 +292,26 @@ export default {
         "value": 2
       }, {
         "label": "高中毕业",
-        "value": 3
+        "value": 0
       },{
         "label": "大专毕业",
-        "value": 4
+        "value": 3
       }, {
         "label": "本科学士",
-        "value": 5
+        "value": 4
       }, {
         "label": "硕士研究生",
-        "value": 6
+        "value": 5
       }, {
         "label": "博士研究生",
-        "value":7
+        "value":6
       }],
       field108Options: [{
         "label": "java工程师",
-        "value": 1
+        "value": 0
       }, {
         "label": "数据分析师",
-        "value": 2
+        "value": 1
       }, {
         "label": "销售经理",
         "value": 3
@@ -394,49 +320,60 @@ export default {
         "value": 4
       }, {
         "label": "UI设计师",
-        "value": 5
+        "value": 2
       },
         {"label": "网路安全工程师",
-          "value": 6
+          "value": 5
         },
         {
           "label": "数据库管理员",
-          "value": 7
+          "value": 6
         },
         {
           "label": "财务经理",
-          "value": 8
+          "value": 7
         },
         {
           "label": "技术支持工程师",
-          "value": 9
+          "value": 8
         },
         {
           "label": "市场分析师",
-          "value": 10
+          "value": 9
         },
         {
           "label": "研发工程师",
-          "value": 11
+          "value": 10
         },
         {
           "label": "公关专员",
-          "value": 12
+          "value": 11
         },
         {
           "label": "客服代表",
-          "value": 13
+          "value": 12
         }
         ,
         {
           "label": "客服服务",
-          "value": 14
+          "value": 13
         },
         {
           "label": "人力资源经理",
+          "value": 14
+        },
+        {
+          "label": "市场营销专员",
           "value": 15
-        }
-
+        },
+        {
+          "label": "软件工程师",
+          "value": 16
+        },
+        {
+          "label": "人事专员",
+          "value": 17
+        },
       ],
       field114Options: [{
         "label": "无",
@@ -479,31 +416,42 @@ export default {
       field115Options: [
         {
         "label": "3k-6k",
-        "value": 1
+        "value": 0
       },
         {
         "label": "6k-9k",
-        "value": 2
+        "value": 1
       },
         {
         "label": "9k-12k",
-        "value": 3
+        "value": 2
       },
         {
         "label": "12k-16k",
-        "value": 4
+        "value": 3
       },
         {
           "label":"16k以上",
-          "value": 5
+          "value": 4
         },
       ],
     }
   },
   computed: {},
   watch: {},
+  
   created() {},
   methods: {
+     calculateAge(birthday) {
+  const today = new Date();
+  const birthDate = new Date(birthday);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+},
     getUser() {
       getUserProfile().then(response => {
         this.user = response.data;
@@ -520,12 +468,28 @@ export default {
       this.$refs['elForm'].validate(valid => {
         if (!valid) return
         // TODO 提交表单
-        setTimeout(() => {
+        const formToSubmit = {
+          id: null,
+          name: this.formData.field105,
+          gender: this.formData.field106,
+          age: this.formData.field107,
+          phone: this.formData.mobile,
+          education: this.formData.field110,
+          expectedSalary: this.formData.field115,
+          positionApplied: this.formData.field108,
+          jobStatus: null,
+          workExperience: null,
+          matchPercentage: null,
+          riskAssessment: null,
+          riskSummaryUrl: null,
+          resumeUrl: this.field118fileList,
+        }
+        addJobapp(formToSubmit).then(response => {
           // 提交成功后的处理
           this.$message.success('提交成功！');
           // 清空表单
           this.resetForm();
-        }, 1000);
+        });
       })
     },
     resetForm() {
